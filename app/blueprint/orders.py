@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 
 orders_bp = Blueprint('orders', __name__)
-from orders import create_order, fetch_order_history, update_order_status
+from app.orders import create_order, fetch_order_history, update_order_status
 
 @orders_bp.route('/orders', methods=['GET', 'POST'])
 def orders_view():

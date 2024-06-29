@@ -7,18 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     crossorigin="anonymous" />
-  <style>
-    body {
-      padding-top: 70px;
-      /* Adjust padding to ensure content is not hidden under the navbar */
-    }
-
-    body,
-    body * {
-      color: black !important;
-      /* Ensure all text is black */
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% if title %}
   <title>Flask Blog - {{ title }}</title>
   {% else %}
@@ -48,13 +37,18 @@
       </div>
     </nav>
   </header>
-  <div class="col-md-8">
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %}
-
-    <div class="alert-{{ category }}">{{ message }}</div>
-    {% endfor %} {% endif %} {% endwith %}
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
   </div>
+
 
   <div class="container mt-4">{% block content %}{% endblock %}</div>
   <!-- JavaScript links -->

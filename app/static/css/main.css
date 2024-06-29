@@ -1,1 +1,18 @@
+body {
+    padding-top: 70px;
+}
 
+body,
+body * {
+    color: black !important;
+    /* Ensure all text is black */
+}
+
+.container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensures the container covers the full viewport height */
+}
+  
+  
