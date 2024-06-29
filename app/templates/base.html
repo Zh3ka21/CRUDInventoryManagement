@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Meta and CSS links -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    crossorigin="anonymous" />
+  <style>
+    body {
+      padding-top: 70px;
+      /* Adjust padding to ensure content is not hidden under the navbar */
+    }
+
+    body,
+    body * {
+      color: black !important;
+      /* Ensure all text is black */
+    }
+  </style>
+  {% if title %}
+  <title>Flask Blog - {{ title }}</title>
+  {% else %}
+  <title>Flask Blog</title>
+  {% endif %}
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-4" href="/">Inventory Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+            <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+          </div>
+          <div class="navbar-nav">
+            <a class="nav-item nav-link" href="{{ url_for('auth.login_view') }}">Login</a>
+            <a class="nav-item nav-link" href="{{ url_for('auth.register_view') }}">Register</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="col-md-8">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+
+    <div class="alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+  </div>
+
+  <div class="container mt-4">{% block content %}{% endblock %}</div>
+  <!-- JavaScript links -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
