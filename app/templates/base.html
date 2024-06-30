@@ -28,10 +28,29 @@
           <div class="navbar-nav mr-auto">
             <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
             <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+
+            <!-- Product Management Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Product Management
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ url_for('products.manage_products') }}">Add/Update/Delete</a>
+                <a class="dropdown-item" href="#">Product Details</a>
+                <a class="dropdown-item" href="#">Product Categories</a>
+              </div>
+            </li>
           </div>
           <div class="navbar-nav">
+            {% if current_user.is_authenticated %}
+            <a class="nav-item nav-link" href="{{ url_for('auth.account_view') }}">Account</a>
+            <a class="nav-item nav-link" href="{{ url_for('auth.logout_view') }}">Logout</a>
+            {% else %}
             <a class="nav-item nav-link" href="{{ url_for('auth.login_view') }}">Login</a>
             <a class="nav-item nav-link" href="{{ url_for('auth.register_view') }}">Register</a>
+            {% endif %}
           </div>
         </div>
       </div>

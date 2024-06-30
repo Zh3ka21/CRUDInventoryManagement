@@ -1,4 +1,4 @@
-from app.set_up import db
+from app import db
 from datetime import datetime
 from bson.objectid import ObjectId
 import logging

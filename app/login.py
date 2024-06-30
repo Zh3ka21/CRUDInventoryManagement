@@ -1,41 +1,59 @@
-from app.set_up import db
 import logging
+from flask import flash, redirect, request, url_for
+from flask_login import current_user, login_user, UserMixin
+from app import db, bcrypt
+from bson import ObjectId
+from app import login_manager
 
-from flask import flash
+
+class User(UserMixin):
+    def __init__(self, user_data):
+        self.id = str(user_data['_id'])
+        self.username = user_data['username']
+        self.email = user_data['email']
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = db.users.find_one({"_id": ObjectId(user_id)})
+    if user_data:
+        return User(user_data)
+    return None
 
 def login(email: str, password: str):
-    user = db.users.find_one(
-        {"email": email},
-        {"email": 1, "password": 1, "_id": 0}
-        )
-       
-    if user is None:
-        logging.error(f"User is {user}")
-        flash("User wasn`t found!", "error")
-        return False
-    
-    
-    if user and user['password'] == password:     
-        logging.info( f"{user['email']} logged in successfully")
-        flash("Logged in successfully", "success")
-        return True
-    
-    elif user['password'] != password:
-        logging.error(f"Incorrect user password")
-        flash("Passwords doesnt match", "error")
-        return False
-    
-    else:
-        logging.error(f"No user was found with email {user['email']}")
-        flash("User wasn`t found!", "error")
+    user_data = db.users.find_one({"email": email})
+
+    if user_data is None:
+        logging.error(f"User with email {email} not found.")
+        flash("User wasn't found!", "error")
         return False
 
-def signup(username: str, email: str, password:  str):
-    exist_user = db.users.find_one({'email': email}, {'email': 1, "_id": 0})
-    if exist_user:
-        logging.error( f"User with such email {exist_user['email']} exists." ) 
+    if bcrypt.check_password_hash(user_data['password'], password):
+        logging.info(f"{user_data['email']} logged in successfully")
+        flash("Logged in successfully", "success")
+        user = User(user_data)
+        login_user(user)
+        return True
+    else:
+        logging.error("Incorrect password")
+        flash("Incorrect password!", "error")
         return False
-    
-    nuser = {"username": username, "email": email, "password": password, "role": "user"}
-    db.users.insert_one(nuser)
+
+def signup(username: str, email: str, password: str):
+    exist_user = db.users.find_one({"email": email})
+    if exist_user:
+        logging.error(f"User with email {email} already exists.")
+        flash("User with this email already exists.", "error")
+        return False
+
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    new_user = {
+        "username": username,
+        "email": email,
+        "password": hashed_password,
+        "role": "user"
+    }
+
+    db.users.insert_one(new_user)
+    logging.info(f"User {email} registered successfully")
+    flash("Registered successfully. Please log in.", "success")
     return True

@@ -1,6 +1,7 @@
 from datetime import datetime
-from set_up import db
-from inventory_track import low_stock
+#from inventory_track import low_stock
+from app.inventory_track import low_stock
+from app import db
 
 import logging
 
