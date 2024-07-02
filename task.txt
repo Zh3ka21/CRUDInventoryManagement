@@ -66,6 +66,8 @@ Technical Implementation:
     Test:
         Test database.
 
+    Socket-io:
+        This technology for multiple user
     
 
 Additional Features:

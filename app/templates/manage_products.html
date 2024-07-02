@@ -45,7 +45,7 @@
                                 value="{{ product.category }}" required>
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="update_price_per_unit">Price per Unit:</label>
+                            <label for="update_price_per_unit">Price per Unit ($):</label>
                             <input type="number" step="0.01" class="form-control" id="update_price_per_unit"
                                 name="update_price_per_unit" value="{{ product.price_per_unit }}" required>
                         </div>
@@ -88,7 +88,7 @@
                     <input type="text" class="form-control" id="category" name="category" required>
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="price_per_unit">Price per Unit:</label>
+                    <label for="price_per_unit">Price per Unit ($):</label>
                     <input type="number" step="0.01" class="form-control" id="price_per_unit" name="price_per_unit"
                         required>
                 </div>
@@ -103,4 +103,29 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all input elements with type number
+        var numberInputs = document.querySelectorAll('input[type="number"]');
+
+        // Attach event listener to form submission
+        document.querySelector('form').addEventListener('submit', function (event) {
+            var valid = true;
+
+            // Check each number input
+            numberInputs.forEach(function (input) {
+                if (input.hasAttribute('required') && input.value < 0) {
+                    alert('Count cannot be less than zero!');
+                    event.preventDefault(); // Prevent form submission
+                    valid = false;
+                }
+            });
+
+            return valid;
+        });
+    });
+</script>
 {% endblock %}

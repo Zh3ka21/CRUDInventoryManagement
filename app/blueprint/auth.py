@@ -5,6 +5,9 @@ from flask_login import current_user, login_required, logout_user
 from app import db, bcrypt
 from bson import ObjectId
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -54,25 +57,39 @@ def logout_view():
     logout_user()
     return redirect(url_for('home'))
 
+class AccountForm(FlaskForm):
+    username = StringField('New Username', validators=[DataRequired()])
+    email = StringField('New Email', validators=[DataRequired(), Email()])
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password')
+    confirm_password = PasswordField('Confirm Password', validators=[EqualTo('new_password', message='Passwords must match')])
+    submit = SubmitField('Update')
+
 @auth_bp.route("/account", methods=['POST', 'GET'])
 @login_required
 def account_view():
     user = db.users.find_one({"_id": ObjectId(current_user.id)})
-
+    
     if not user:
         flash('User not found.', 'error')
         return redirect(url_for('home'))
-        
-    if request.method == 'POST':
-        new_username = request.form.get('username')
-        new_email = request.form.get('email')
-        current_password = request.form.get('current_password')
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_password')
+
+    form = AccountForm()
+    # Pre-fill form with user data
+    if request.method == 'GET':
+        form.username.data = user.get('username')
+        form.email.data = user.get('email')
+
+    if request.method == 'POST' and form.validate_on_submit():
+        new_username = form.username.data
+        new_email = form.email.data
+        current_password = form.current_password.data
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
 
         # Validate new email
-        if db.users.find({'email': new_email}):
-            flash('Incorrect new email.', 'error')
+        if db.users.find_one({'email': new_email}) and new_email != user['email']:
+            flash('Email is already in use by another account.', 'error')
             return redirect(url_for('auth.account_view'))
 
         # Validate current password
@@ -87,12 +104,11 @@ def account_view():
             if new_password and new_password == confirm_password:
                 user['password'] = bcrypt.generate_password_hash(new_password).decode('utf-8')
 
-
             # Save user data back to the database
             db.users.update_one({"_id": ObjectId(current_user.id)}, {"$set": user})
             flash('Account information updated successfully.', 'success')
 
             # Redirect to prevent form resubmission on refresh
             return redirect(url_for('home'))
-    
-    return render_template('account.html', title='Account', user=user)
+
+    return render_template('account.html', title='Account', form=form, user=user)

@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from datetime import datetime
-import logging
 
-from app.inventory_track import low_stock
-from app import db
+from app.products import add_product, update_product, delete_product
+from app.filters import search_products
+from .utils import sort_products
+from app.inventory_track import fetch_stocks
 
 products_bp = Blueprint('products', __name__)
 
@@ -20,25 +20,19 @@ def manage_products():
             price = float(request.form['price_per_unit'])
             supplier = request.form['supplier']
             
-            exist = db.items.find_one({"name": item_name})
-            if exist:
-                flash(f"Item '{item_name}' already exists in the database.", 'error')
-            else:
-                item = {
-                    'name': item_name,
-                    'count': count,
-                    'description': description,
-                    'category': category,
-                    'created_at': datetime.now(),
-                    'updated_at': datetime.now(),
-                    'price_per_unit': price,
-                    'supplier': supplier
-                }
-                
-                db.items.insert_one(item)
-                logging.info(f"Item '{item_name}' added successfully.")
-                low_stock(item_name)  # Assuming this function is defined elsewhere
+            if count < 0:
+                flash('Count cannot be less than zero!', 'error')
+                return redirect(url_for('products.manage_products'))
             
+            add_product(
+                item_name,
+                count,
+                description,
+                category,
+                price,
+                supplier                
+            )
+                        
         elif 'update_product' in request.form:
             item_name = request.form['update_name']
             count = int(request.form['update_count'])
@@ -47,44 +41,53 @@ def manage_products():
             price = float(request.form['update_price_per_unit'])
             supplier = request.form['update_supplier']
             
-            exist = db.items.find_one({"name": item_name})
-            if exist:
-                item = {
-                    'name': item_name,
-                    'count': count,
-                    'description': description,
-                    'category': category,
-                    'updated_at': datetime.now(),
-                    'price_per_unit': price,
-                    'supplier': [supplier]
-                }
-                
-                db.items.update_one({'_id': exist['_id']}, {'$set': item})
-                logging.info(f"Item '{item_name}' updated successfully.")
-                
-                # TODO: CHECK THIS
-                low_stock(item_name)  # Assuming this function is defined elsewhere
-            else:
-                flash(f"Item with name '{item_name}' does not exist.", 'error')
+            if count < 0:
+                flash('Count cannot be less than zero!', 'error')
+                return redirect(url_for('products.manage_products'))
+
             
+            update_product(
+                item_name,
+                count,
+                description,
+                category,
+                price,
+                supplier               
+            )
+                        
         elif 'delete_product' in request.form:
             item_name = request.form['delete_name']
-            
-            exist = db.items.find_one({"name": item_name})
-            if exist:
-                db.items.delete_one({'_id': exist['_id']})
-                logging.info(f"Item '{item_name}' deleted successfully.")
-            else:
-                flash(f"Item '{item_name}' does not exist in the database.", 'error')
-            
+            delete_product(item_name)
+
         return redirect(url_for('products.manage_products'))
 
     search_name = request.args.get('search_name')
     if search_name:
-        products = list(db.items.find({"name": {"$regex": search_name, "$options": "i"}}))
+        products = list(search_products(search_name))
     else:
         products = None
         
     return render_template('manage_products.html', products=products)
 
 
+@products_bp.route("/product_details", methods=['GET', 'POST'])
+@login_required
+def product_details():
+    sort_by = request.args.get('sort_by', 'name')
+    order = request.args.get('order', 'asc')
+    
+    products = search_products(isLow=False)
+    sorted_products = sort_products(products, sort_by, order)
+    
+    return render_template('products_details.html', sorted_products=sorted_products, sort_by=sort_by, order=order)
+
+@products_bp.route("/below_stocks", methods=['GET', 'POST'])
+@login_required
+def below_stocks():
+    sort_by = request.args.get('sort_by', 'name')
+    order = request.args.get('order', 'asc')
+    
+    products = fetch_stocks()
+    sorted_products = sort_products(products, sort_by, order)
+    
+    return render_template('below_stocks.html', sorted_products=sorted_products, sort_by=sort_by, order=order)

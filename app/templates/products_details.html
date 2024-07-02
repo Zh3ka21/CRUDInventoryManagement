@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <h2>Product List</h2>
+        {% if sorted_products %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th><a
+                                href="?sort_by=name&order={{ 'asc' if sort_by == 'name' and order == 'desc' else 'desc' }}">Name</a>
+                        </th>
+                        <th><a
+                                href="?sort_by=count&order={{ 'asc' if sort_by == 'count' and order == 'desc' else 'desc' }}">Count</a>
+                        </th>
+                        <th>Description</th>
+                        <th><a
+                                href="?sort_by=category&order={{ 'asc' if sort_by == 'category' and order == 'desc' else 'desc' }}">Category</a>
+                        </th>
+                        <th><a
+                                href="?sort_by=price_per_unit&order={{ 'asc' if sort_by == 'price_per_unit' and order == 'desc' else 'desc' }}">Price
+                                per Unit ($)</a></th>
+                        <th><a
+                                href="?sort_by=supplier&order={{ 'asc' if sort_by == 'supplier' and order == 'desc' else 'desc' }}">Supplier</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in sorted_products %}
+                    <tr>
+                        <td>{{ product.get('name', 'No Name') }}</td>
+                        <td>{{ product.get('count', 'No Count') }}</td>
+                        <td>{{ product.get('description', 'No Description') }}</td>
+                        <td>{{ product.get('category', 'No Category') }}</td>
+                        <td>{{ product.get('price_per_unit', 'No Price') }}</td>
+                        <td>{{ product.get('supplier', 'No Supplier') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No products found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

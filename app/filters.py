@@ -1,6 +1,7 @@
-from set_up import db
+from app import db
+from app.inventory_track import low_stock
 
-def search_products(name=None, category=None, min_count=None, max_count=None):
+def search_products(name=None, category=None, isLow: bool = True):
     query = {}
     
     if name:
@@ -8,7 +9,13 @@ def search_products(name=None, category=None, min_count=None, max_count=None):
     if category:
         query['category'] = category
     
-    products = db.items.find(query, {'_id': 0})
+    products_cursor = db.items.find(query, {'_id': 0})  
+
+    products = []
+    for product in products_cursor:
+        if isLow:
+            low_stock(product['name'])
+        products.append(product)
     return list(products)
 
 def filter_products(criteria):
@@ -20,7 +27,7 @@ def filter_products(criteria):
         elif key == 'category':
             query['category'] = value
         elif key == 'price':
-            query['price_per_unit'] = value  # Directly assign the price value
+            query['price_per_unit'] = value 
     
     products = db.items.find(query, {'_id': 0})
     return list(products)
