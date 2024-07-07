@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h1>Your Order History</h1>
+
+    {% if orders %}
+    <ul class="list-group">
+        {% for order in orders %}
+        <li class="list-group-item">
+            <div class="order-details">
+                <strong>Order ID:</strong> {{ order['_id'] }}<br>
+                <strong>Item:</strong> {{ order['item_name'] }} (Quantity: {{ order['quantity'] }})<br>
+                <strong>Email:</strong> {{ order['email'] }}<br>
+                <strong>Order Date:</strong> {{ order['order_date_formatted'] }}<br>
+                <strong>Status:</strong> <span class="badge badge-primary">{{ order['status'] }}</span><br>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No orders found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

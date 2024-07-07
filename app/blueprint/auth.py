@@ -1,13 +1,11 @@
 from flask import Blueprint, render_template, redirect, request, url_for, flash
 from app.login import login, signup
-from app.forms.auth_form import RegistrationForm, LoginForm
+from app._forms.auth_form import RegistrationForm, LoginForm
 from flask_login import current_user, login_required, logout_user
 from app import db, bcrypt
 from bson import ObjectId
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from app.forms import AccountForm
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -56,14 +54,6 @@ def login_view():
 def logout_view():
     logout_user()
     return redirect(url_for('home'))
-
-class AccountForm(FlaskForm):
-    username = StringField('New Username', validators=[DataRequired()])
-    email = StringField('New Email', validators=[DataRequired(), Email()])
-    current_password = PasswordField('Current Password', validators=[DataRequired()])
-    new_password = PasswordField('New Password')
-    confirm_password = PasswordField('Confirm Password', validators=[EqualTo('new_password', message='Passwords must match')])
-    submit = SubmitField('Update')
 
 @auth_bp.route("/account", methods=['POST', 'GET'])
 @login_required

@@ -1,11 +1,13 @@
 from app import db
 from app.inventory_track import low_stock
 
+from flask import flash
+
 def search_products(name=None, category=None, isLow: bool = True):
     query = {}
     
     if name:
-        query['name'] = {'$regex': name, '$options': 'i'}  # Case-insensitive search
+        query['item_name'] = {'$regex': name, '$options': 'i'}  # Case-insensitive search
     if category:
         query['category'] = category
     
@@ -14,16 +16,19 @@ def search_products(name=None, category=None, isLow: bool = True):
     products = []
     for product in products_cursor:
         if isLow:
-            low_stock(product['name'])
+            low_stock(product['item_name'])
         products.append(product)
+        
+    if len(products) == 0:
+        flash("No such product found", "error")
     return list(products)
 
 def filter_products(criteria):
     query = {}
     
     for key, value in criteria.items():
-        if key == 'name':
-            query['name'] = {'$regex': value, '$options': 'i'}  # Case-insensitive search
+        if key == 'item_name':
+            query['item_name'] = {'$regex': value, '$options': 'i'}  # Case-insensitive search
         elif key == 'category':
             query['category'] = value
         elif key == 'price':

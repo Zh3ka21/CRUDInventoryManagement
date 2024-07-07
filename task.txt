@@ -22,7 +22,6 @@ Key Features to Include:
         Order History: Maintain a history of all orders placed.
         Order Status: Track the status of each order (e.g., pending, shipped, delivered).
 
-    ############# MUST BE DONE ################
     Reporting and Analytics:
         Sales Reports: Generate reports on sales over various periods. (Graphics for each product to see its growth)
         Inventory Reports: Generate reports on inventory levels and movements.
@@ -32,7 +31,6 @@ Key Features to Include:
         Search Products: Allow users to search for products by name, category, etc.
         Filter Products: Provide filtering options based on various criteria.
 
-    ############# MUST BE DONE ################
     User Interface:
         Dashboard: Provide an overview of key metrics (e.g., total products, low stock items).
         Responsive Design: Ensure the application works well on different devices.
@@ -68,6 +66,8 @@ Technical Implementation:
 
     Socket-io:
         This technology for multiple user
+
+    Add selectors for categories:
     
 
 Additional Features:
@@ -124,4 +124,6 @@ Useful Libraries and Tools:
 By including these features and following this structure, you’ll create a comprehensive and functional inventory management system. This will not only showcase your skills in web development but also provide practical experience in building real-world applications.
 
 
- 
+# Exporting/importing a db
+mongodump --db im --out /home/eugene/Desktop/Quest/Course/backup
+mongorestore --db inventory_management /home/eugene/Desktop/Quest/Course/backup

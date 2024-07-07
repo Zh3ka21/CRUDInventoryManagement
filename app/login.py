@@ -1,6 +1,6 @@
 import logging
 from flask import flash, redirect, request, url_for
-from flask_login import current_user, login_user, UserMixin
+from flask_login import login_user, UserMixin
 from app import db, bcrypt
 from bson import ObjectId
 from app import login_manager
@@ -11,6 +11,7 @@ class User(UserMixin):
         self.id = str(user_data['_id'])
         self.username = user_data['username']
         self.email = user_data['email']
+        self.status = user_data['role']
 
 @login_manager.user_loader
 def load_user(user_id):

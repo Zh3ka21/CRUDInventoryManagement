@@ -36,7 +36,6 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Product Management
               </a>
-
               <div class="dropdown-menu" aria-labelledby="navbarDropdownProduct">
                 <a class="dropdown-item" href="{{ url_for('products.manage_products') }}">Add/Update/Delete</a>
                 <a class="dropdown-item" href="{{ url_for('products.product_details') }}">Product Details</a>
@@ -49,12 +48,21 @@
                 aria-haspopup="true" aria-expanded="false">
                 Order Management
               </a>
-
               <div class="dropdown-menu" aria-labelledby="navbarDropdownOrder">
                 <a class="dropdown-item" href="{{ url_for('orders.create_order_view') }}">Create order</a>
-                <a class="dropdown-item" href="#">List of orders</a>
-                <a class="dropdown-item" href="#">Order history</a>
-                <a class="dropdown-item" href="#">Update order status</a>
+                <a class="dropdown-item" href="{{ url_for('orders.orders_list') }}">Your orders</a>
+                <a class="dropdown-item" href="{{ url_for('orders.update_order_view') }}">Update order status</a>
+              </div>
+            </li>
+            <!-- Reports Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownReport" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Reports
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownReport">
+                <a class="dropdown-item" href="{{ url_for('reports.sales_report') }}">Sales Report</a>
+                <a class="dropdown-item" href="{{ url_for('reports.inventory_report') }}">Inventory Report</a>
               </div>
             </li>
             {% endif %}
@@ -78,7 +86,7 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="alert-{{ category }}">{{ message }}</div>
+      <div class="alert alert-{{ category }}">{{ message }}</div>
       {% endfor %}
       {% endif %}
       {% endwith %}

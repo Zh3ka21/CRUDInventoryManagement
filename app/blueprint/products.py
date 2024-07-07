@@ -65,10 +65,8 @@ def manage_products():
     if search_name:
         products = list(search_products(search_name))
     else:
-        products = None
-        
+        products = None   
     return render_template('manage_products.html', products=products)
-
 
 @products_bp.route("/product_details", methods=['GET', 'POST'])
 @login_required

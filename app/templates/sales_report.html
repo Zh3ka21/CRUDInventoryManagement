@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Sales Report{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col">
+        <h1>Sales Report</h1>
+        <div class="dropdown mb-4">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Time Period
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" data-value="7" href="#">Last 7 Days</a>
+                <a class="dropdown-item" data-value="30" href="#">Last 30 Days</a>
+                <a class="dropdown-item" data-value="90" href="#">Last 90 Days</a>
+            </div>
+        </div>
+        <form id="reportForm" method="POST" action="{{ url_for('reports.sales_report') }}">
+            {{ form.csrf_token }}
+            <input type="hidden" name="time_period" id="timePeriodInput" value="7">
+        </form>
+        <img src="{{ url_for('static', filename='images/sales_report.png') }}" alt="Sales Report">
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            document.getElementById('timePeriodInput').value = value;
+            document.getElementById('reportForm').submit();
+        });
+    });
+</script>
+{% endblock %}

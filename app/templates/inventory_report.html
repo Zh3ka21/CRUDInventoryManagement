@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory Report{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col">
+        <h1>Inventory Report</h1>
+        <div class="dropdown mb-4">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Category
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ url_for('reports.inventory_report', category='All') }}">All</a>
+                {% for cat in categories %}
+                <a class="dropdown-item" href="{{ url_for('reports.inventory_report', category=cat) }}">{{ cat }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if category != 'All' %}
+        {% set image_path = 'images/inventory_report_' ~ category.lower() ~ '.png' %}
+        {% if image_path %}
+        <img src="{{ url_for('static', filename=image_path) }}" alt="Inventory Report - {{ category }}">
+        {% else %}
+        <p>No inventory report available for {{ category }}</p>
+        {% endif %}
+        {% else %}
+        <p>Select a category to view inventory report.</p>
+        {% set image_path = 'images/inventory_report_all.png' %}
+        <img src="{{ url_for('static', filename=image_path) }}" alt="Inventory Report - All">
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

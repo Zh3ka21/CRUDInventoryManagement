@@ -10,7 +10,7 @@
                 <thead>
                     <tr>
                         <th><a
-                                href="?sort_by=name&order={{ 'asc' if sort_by == 'name' and order == 'desc' else 'desc' }}">Name</a>
+                                href="?sort_by=item_name&order={{ 'asc' if sort_by == 'item_name' and order == 'desc' else 'desc' }}">Name</a>
                         </th>
                         <th><a
                                 href="?sort_by=count&order={{ 'asc' if sort_by == 'count' and order == 'desc' else 'desc' }}">Count</a>
@@ -30,7 +30,7 @@
                 <tbody>
                     {% for product in sorted_products %}
                     <tr>
-                        <td>{{ product.get('name', 'No Name') }}</td>
+                        <td>{{ product.get('item_name', 'No Name') }}</td>
                         <td>{{ product.get('count', 'No Count') }}</td>
                         <td>{{ product.get('description', 'No Description') }}</td>
                         <td>{{ product.get('category', 'No Category') }}</td>

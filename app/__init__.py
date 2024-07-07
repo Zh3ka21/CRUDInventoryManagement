@@ -5,10 +5,13 @@ from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import logging
 
+THRESHOLD = 5
+
 client = MongoClient('mongodb://localhost:27017/')
 db = client.im
 
-app = Flask(__name__)
+#Change
+app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 csrf = CSRFProtect(app)
 
