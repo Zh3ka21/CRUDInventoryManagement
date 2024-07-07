@@ -5,7 +5,6 @@ from app import db, bcrypt
 from bson import ObjectId
 from app import login_manager
 
-
 class User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data['_id'])
@@ -30,7 +29,6 @@ def login(email: str, password: str):
 
     if bcrypt.check_password_hash(user_data['password'], password):
         logging.info(f"{user_data['email']} logged in successfully")
-        flash("Logged in successfully", "success")
         user = User(user_data)
         login_user(user)
         return True

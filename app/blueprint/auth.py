@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, url_for, flash
+from flask import Blueprint, render_template, redirect, request, url_for, flash, jsonify
 from app.login import login, signup
 from app._forms.auth_form import RegistrationForm, LoginForm
 from flask_login import current_user, login_required, logout_user
@@ -9,96 +9,92 @@ from app.forms import AccountForm
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route("/register", methods=['GET', 'POST'])
+@auth_bp.route("/register", methods=['POST'])
 def register_view():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return jsonify({"message": "Already authenticated"}), 200
     
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        username = form.name.data
-        email = form.email.data
-        password = form.password.data
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
 
-        # Process signup logic
-        is_signed = signup(username=username, email=email, password=password)
+    if not username or not email or not password:
+        return jsonify({"error": "Missing required fields"}), 400
 
-        if is_signed:
-            return redirect(url_for('auth.login_view'))
-        else:
-            flash("Registration failed. Please try again.", "error")
+    is_signed = signup(username=username, email=email, password=password)
 
-    return render_template('register.html', title='Register', form=form)
+    if is_signed:
+        return jsonify({"message": "Registered successfully"}), 201
+    else:
+        return jsonify({"error": "Registration failed"}), 400
 
-@auth_bp.route("/login", methods=['GET', 'POST'])
+@auth_bp.route("/login", methods=['POST'])
 def login_view():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
+        return jsonify({"message": "Already authenticated"}), 200
+        
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
 
-        # Process login logic
-        is_logged = login(email=email, password=password)
+    if not email or not password:
+        return jsonify({"error": "Missing required fields"}), 400
 
-        if is_logged:
-            return redirect(url_for('home'))
-        else:
-            flash("Login failed. Please check your credentials.", "error")
+    is_logged = login(email=email, password=password)
 
-    return render_template('login.html', title='Login', form=form)
+    if is_logged:
+        return jsonify({"message": "Logged in successfully"}), 200
+    else:
+        return jsonify({"error": "Login failed"}), 401
 
-@auth_bp.route("/logout")
+@auth_bp.route("/logout", methods=['POST'])
+@login_required
 def logout_view():
     logout_user()
-    return redirect(url_for('home'))
+    return jsonify({"message": "Logged out successfully"}), 200
 
-@auth_bp.route("/account", methods=['POST', 'GET'])
+@auth_bp.route("/account", methods=['GET', 'PUT'])
 @login_required
 def account_view():
     user = db.users.find_one({"_id": ObjectId(current_user.id)})
-    
+
     if not user:
-        flash('User not found.', 'error')
-        return redirect(url_for('home'))
+        return jsonify({"error": "User not found"}), 404
 
-    form = AccountForm()
-    # Pre-fill form with user data
     if request.method == 'GET':
-        form.username.data = user.get('username')
-        form.email.data = user.get('email')
+        user_data = {
+            "username": user.get('username'),
+            "email": user.get('email')
+        }
+        return jsonify(user_data), 200
 
-    if request.method == 'POST' and form.validate_on_submit():
-        new_username = form.username.data
-        new_email = form.email.data
-        current_password = form.current_password.data
-        new_password = form.new_password.data
-        confirm_password = form.confirm_password.data
+    if request.method == 'PUT':
+        data = request.get_json()
+        new_username = data.get('username')
+        new_email = data.get('email')
+        current_password = data.get('current_password')
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
 
-        # Validate new email
-        if db.users.find_one({'email': new_email}) and new_email != user['email']:
-            flash('Email is already in use by another account.', 'error')
-            return redirect(url_for('auth.account_view'))
+        if not current_password:
+            return jsonify({"error": "Current password required"}), 400
 
-        # Validate current password
         if not bcrypt.check_password_hash(user['password'], current_password):
-            flash('Incorrect current password.', 'error')
-        else:
-            # Update user data
-            user['username'] = new_username
-            user['email'] = new_email
+            return jsonify({"error": "Incorrect current password"}), 401
 
-            # Update password if new_password is provided and matches confirm_password
-            if new_password and new_password == confirm_password:
-                user['password'] = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        if new_email and db.users.find_one({'email': new_email}) and new_email != user['email']:
+            return jsonify({"error": "Email is already in use by another account"}), 400
 
-            # Save user data back to the database
-            db.users.update_one({"_id": ObjectId(current_user.id)}, {"$set": user})
-            flash('Account information updated successfully.', 'success')
+        user['username'] = new_username if new_username else user['username']
+        user['email'] = new_email if new_email else user['email']
 
-            # Redirect to prevent form resubmission on refresh
-            return redirect(url_for('home'))
+        if new_password:
+            if new_password != confirm_password:
+                return jsonify({"error": "New passwords do not match"}), 400
+            user['password'] = bcrypt.generate_password_hash(new_password).decode('utf-8')
 
-    return render_template('account.html', title='Account', form=form, user=user)
+        db.users.update_one({"_id": ObjectId(current_user.id)}, {"$set": user})
+        return jsonify({"message": "Account information updated successfully"}), 200
+    
+    
