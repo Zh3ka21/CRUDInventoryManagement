@@ -55,18 +55,22 @@ Technical Implementation:
         Forms: Create forms for user inputs (e.g., product addition, order creation).
         JavaScript: Enhance user experience with JavaScript (e.g., form validation, asynchronous requests).
 
+    #TODO
     Deployment:
         Server Setup: Configure a server (e.g., AWS, Heroku) to host the application.
         Database Configuration: Set up a remote MongoDB instance (e.g., MongoDB Atlas).
         Environment Variables: Securely manage configuration settings using environment variables.
         Continuous Integration/Continuous Deployment (CI/CD): Automate deployment processes.
 
+    #TODO
     Test:
         Test database.
 
+    #TODO
     Socket-io:
         This technology for multiple user
 
+    ##TODO
     Add selectors for categories:
     
 

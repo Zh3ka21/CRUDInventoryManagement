@@ -1,18 +1,21 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="account-container">
     <h2>Account Information</h2>
     <div id="accountInfo">
         <p id="accountMessage"></p>
     </div>
-    <form id="accountForm" style="display: none;">
-        <input type="text" id="accUsername" placeholder="New Username">
-        <input type="email" id="accEmail" placeholder="New Email">
-        <input type="password" id="currentPassword" placeholder="Current Password" required>
-        <input type="password" id="newPassword" placeholder="New Password">
-        <input type="password" id="confirmPassword" placeholder="Confirm New Password">
+    <form id="accountForm" method="POST" action="{{ url_for('auth.account_update') }}" style="display: none;">
+        {{ form.csrf_token }}
+        <input type="text" id="accUsername" name="username" placeholder="New Username">
+        <input type="email" id="accEmail" name="email" placeholder="New Email">
+        <input type="password" id="currentPassword" name="current_password" placeholder="Current Password" required>
+        <input type="password" id="newPassword" name="new_password" placeholder="New Password">
+        <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm New Password">
         <button type="submit">Update Account</button>
     </form>
 </div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 {% endblock %}

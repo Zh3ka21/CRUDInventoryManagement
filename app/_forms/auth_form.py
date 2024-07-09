@@ -18,3 +18,13 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember me')
     submit = SubmitField('Login')
+    
+    
+class AccountForm(FlaskForm):
+    username = StringField('New Username')
+    email = StringField('New Email', validators=[Email()])
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password')
+    confirm_password = PasswordField('Confirm New Password')
+    submit = SubmitField('Update Account')
+    

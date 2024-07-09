@@ -1,87 +1,57 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
+document.addEventListener('DOMContentLoaded', function() {
     const accountForm = document.getElementById('accountForm');
-    const logoutButton = document.getElementById('logoutButton');
-
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, email, password })
-            });
-
-            const result = await response.json();
-            document.getElementById('registerMessage').innerText = result.message || result.error;
-        });
-    }
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const result = await response.json();
-            document.getElementById('loginMessage').innerText = result.message || result.error;
-        });
-    }
+    const accountMessage = document.getElementById('accountMessage');
 
     if (accountForm) {
-        fetch('/account', { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById('accountMessage').innerText = data.error;
-                } else {
-                    accountForm.style.display = 'block';
-                    document.getElementById('accUsername').value = data.username;
-                    document.getElementById('accEmail').value = data.email;
-                }
-            });
+        fetch('/auth/account/data', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                accountForm.style.display = 'block';
+            }
+            document.getElementById('accUsername').value = data.username || '';
+            document.getElementById('accEmail').value = data.email || '';
+        })
+        .catch(error => {
+            accountMessage.textContent = 'Error fetching account information.';
+        });
 
-        accountForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('accUsername').value;
-            const email = document.getElementById('accEmail').value;
+        accountForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const newUsername = document.getElementById('accUsername').value;
+            const newEmail = document.getElementById('accEmail').value;
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
-            const response = await fetch('/account', {
+            fetch('/auth/account', {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // Include the CSRF token in the headers
                 },
-                body: JSON.stringify({ username, email, current_password: currentPassword, new_password: newPassword, confirm_password: confirmPassword })
+                body: JSON.stringify({
+                    username: newUsername,
+                    email: newEmail,
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    confirm_password: confirmPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                accountMessage.textContent = data.message || 'Account updated successfully.';
+            })
+            .catch(error => {
+                accountMessage.textContent = 'Error updating account information.';
             });
-
-            const result = await response.json();
-            document.getElementById('accountMessage').innerText = result.message || result.error;
-        });
-    }
-
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            const response = await fetch('/logout', { method: 'POST' });
-            const result = await response.json();
-            alert(result.message || result.error);
         });
     }
 });
