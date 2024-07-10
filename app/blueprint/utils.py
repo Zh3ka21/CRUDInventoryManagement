@@ -1,6 +1,6 @@
 def sort_products(products, sort_by, order):
-    if sort_by == 'name':
-        key = lambda x: x.get('name', '').lower()  # Access 'name' from dictionary safely
+    if sort_by == 'item_name':
+        key = lambda x: x.get('item_name', '').lower()  # Access 'name' from dictionary safely
     elif sort_by == 'count':
         key = lambda x: x.get('count', 0)  # Access 'count' from dictionary safely
     elif sort_by == 'category':

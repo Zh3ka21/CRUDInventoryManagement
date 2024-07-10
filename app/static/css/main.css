@@ -46,5 +46,30 @@ body * {
   .about-section li strong {
     color: #007bff;
   }
-  
-  
+
+  .card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.btn {
+    margin-right: 5px;
+}
+
+.row {
+    margin-top: 20px;
+}

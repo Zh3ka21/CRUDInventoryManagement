@@ -1,7 +1,7 @@
 from app import db
 from app.inventory_track import low_stock
 
-from flask import flash
+from flask import flash, jsonify
 
 def search_products(name=None, category=None, isLow: bool = True):
     query = {}
@@ -21,6 +21,7 @@ def search_products(name=None, category=None, isLow: bool = True):
         
     if len(products) == 0:
         flash("No such product found", "error")
+        return jsonify({"No such product found"}, 400)
     return list(products)
 
 def filter_products(criteria):
