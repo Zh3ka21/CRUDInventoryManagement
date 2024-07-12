@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, request, url_for, flash, jsonify
 from app.login import login, signup
-from app._forms.auth_form import RegistrationForm, LoginForm, AccountForm
+from app.forms.auth_form import RegistrationForm, LoginForm, AccountForm
 from flask_login import current_user, login_required, logout_user
 from app import db, bcrypt
 from bson import ObjectId

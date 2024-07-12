@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 
-from app._forms.forms import ProductForm
+from app.forms.main_forms import ProductForm
 from app.products import add_product, update_product, delete_product, get_all_products
 from app.filters import search_products
 from .utils import sort_products

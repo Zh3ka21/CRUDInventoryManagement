@@ -1,0 +1,61 @@
+.add_container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+.add_container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.add_container .form-group {
+    margin-bottom: 15px;
+}
+
+.add_container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+.add_container input[type="text"],
+.add_container input[type="number"],
+.add_container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.add_container textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.add_container button.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.add_container button.btn:hover {
+    background-color: #0056b3;
+}

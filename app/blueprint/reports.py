@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from app.reports import generate_sales_report, generate_inventory_report, ReportForm
 from app import db
-from app._forms.forms import csrf
+from app.forms.main_forms import csrf
 
 reports_bp = Blueprint('reports', __name__)
 

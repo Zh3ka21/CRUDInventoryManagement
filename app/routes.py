@@ -1,4 +1,6 @@
-from flask import render_template
+from flask import redirect, render_template, url_for
+from app.forms.main_forms import ProductForm
+from app.products import get_all_products
 from app.blueprint.auth import auth_bp
 from app.blueprint.inventory import inventory_bp
 from app.blueprint.orders import orders_bp
@@ -16,11 +18,12 @@ app.register_blueprint(reports_bp, url_prefix='/reports')
 
 @app.route('/home')
 def home():
-    return render_template('base.html')
+   products = get_all_products()
+   return render_template('base.html', products=products)
 
 @app.route('/')
 def index():
-    return render_template('base.html')
+    return redirect(url_for('home'))
 
 @app.route('/about')
 def about():
