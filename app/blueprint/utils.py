@@ -15,3 +15,10 @@ def sort_products(products, sort_by, order):
 
     sorted_products = sorted(products, key=key, reverse=(order == 'desc'))
     return sorted_products
+
+def convert_ids_to_str(orders: list):
+    for di in orders:
+        for k, v in di.items():
+            if k == '_id':
+                di[k] = str(v)
+    return list(orders)

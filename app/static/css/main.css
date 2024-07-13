@@ -1,11 +1,77 @@
 body {
-    padding-top: 70px;
+  padding-top: 20px; /* Adjust the value as needed */
 }
 
 body,
 body * {
     color: black !important;
-    /* Ensure all text is black */
+}
+
+.product-list-title {
+  margin-top: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.col-md-4 {
+  padding: 0.5rem;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  /* Increased rounding */
+  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: #ffffff;
+  /* White background for cards */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.card-text strong {
+  color: #333;
+}
+
+.card-text br {
+  margin-bottom: 0.5rem;
+}
+
+.product-list-container {
+  background-color: #e9ecef;
+  /* Light gray background for the product list */
+  border-radius: 15px;
+  /* Rounded corners for the container */
+  padding: 1rem;
+  /* Padding around the product list */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .container-fluid {

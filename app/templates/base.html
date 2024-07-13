@@ -83,13 +83,37 @@
       </div>
     </nav>
   </header>
+
   <main>
+    {% block main %}
     <div class="row mt-4">
       <div class="col-12">
-        {% include 'base_product_list.html' %}
+        <h2 class="product-list-title">Product List</h2>
+        <div class="product-list-container">
+          <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{ product.item_name }}</h5>
+                  <p class="card-text">
+                    <strong>Count:</strong> {{ product.count }}<br>
+                    <strong>Description:</strong> {{ product.description }}<br>
+                    <strong>Category:</strong> {{ product.category }}<br>
+                    <strong>Price:</strong> ${{ product.price_per_unit }}<br>
+                    <strong>Supplier:</strong> {{ product.supplier }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
+    {% endblock %}
   </main>
+
   <div class="row justify-content-center">
     <div class="col-md-8">
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -103,6 +127,7 @@
   </div>
 
   <div class="container mt-4">{% block content %}{% endblock %}</div>
+
   <!-- JavaScript links -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"

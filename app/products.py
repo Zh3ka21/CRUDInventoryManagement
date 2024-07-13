@@ -65,7 +65,7 @@ def update_product(_id: str, item_name: str, count: int, description: str, categ
     else:
         flash(f"Item with name '{item_name}' does not exist.", 'error')
         logging.error(f"Item with name '{item_name}' does not exist.")
-        return jsonify({"error": f"Item with name '{item_name}' does not exist."}, 200)
+        return jsonify({"error": f"Item with name '{item_name}' does not exist."}, 400)
 
 def delete_product(id: str):
     exist = db.items.find_one({"_id": id}, {"_id": 1, 'item_name': 1})

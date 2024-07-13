@@ -20,8 +20,8 @@ def search_products_view():
 def create_order_view():
     form = OrderForm()
     if form.validate_on_submit():
-        item_name = form.item_name.data
         quantity = form.quantity.data
+        item_name = form.item_name.data
         
         if create_order(item_name, quantity, current_user.email):
             return redirect(url_for('orders.create_order_view'))
@@ -33,12 +33,11 @@ def create_order_view():
 @orders_bp.route("/orders_list", methods=['GET', 'POST'])
 @login_required
 def orders_list():
-    orders = fetch_order_history(current_user.email)
-    
-    # Format dates before passing to the template
+    orders_data = fetch_order_history(current_user.email)
+    orders = orders_data["orders"]
     for order in orders:
-        order['order_date_formatted'] = order['order_date'].strftime('%Y-%m-%d %H:%M:%S')
-    
+        if 'order_date' in order:
+            order['order_date_formatted'] = order['order_date'].strftime('%Y-%m-%d %H:%M:%S')
     return render_template("orders_list.html", orders=orders)
 
 @orders_bp.route("/update_order", methods=['GET', 'POST'])
@@ -47,9 +46,11 @@ def update_order_view():
     form = StatusForm()
     # Ensure the user is an admin
     if current_user.status == 'admin':
-        orders = fetch_order_history(current_user.email)
+        orders_data = fetch_order_history(current_user.email)
+        orders = orders_data["orders"]
         for order in orders:
-            order['order_date_formatted'] = order['order_date'].strftime('%Y-%m-%d %H:%M:%S')
+            if 'order_date' in order:
+                order['order_date_formatted'] = order['order_date'].strftime('%Y-%m-%d %H:%M:%S')
 
         # Process form submission
         if request.method == 'POST':
@@ -62,7 +63,6 @@ def update_order_view():
                 return redirect(url_for('orders.update_order_view'))
             else:
                 flash("Failed to update the order status. Please check the input.", 'error')
-
     else:
         flash("Only admin can change status", 'error')
 
